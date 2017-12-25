@@ -81,6 +81,7 @@ $(document).on('click', '#deletePostBtn', function (event) {
 	event.preventDefault();
 	var post_id = $('#modal_post_id').html();
 	db.collection("posts").doc(post_id).delete().then(function() {
+		Materialize.toast('Brilliant! Your announcement has been deleted.', 3000);
 	}).catch(function(error) {
 		Materialize.toast('Oh Bollocks! An error occured.', 3000);
 	});
