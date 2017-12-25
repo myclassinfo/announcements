@@ -1,91 +1,28 @@
 firebase.auth().onAuthStateChanged(function(user) { if (user) {  $('.delete-button').removeClass('hide'); $('.signIn').addClass('hide'); $('.signOut').removeClass('hide'); $('#signInModal').modal('close'); var user = firebase.auth().currentUser; if(user.uid == 'C7WLwOKq9ufefZ8s6Ol0MMmsrV32'){ $('#createNewPost').removeClass('hide'); } } else { } });
 var db = firebase.firestore(); var storage = firebase.storage(); var d = new Date(); var curr_date = d.getDate(); var curr_month = d.getMonth(); var curr_year = d.getFullYear(); var month = new Array(); month[0] = "January"; month[1] = "February"; month[2] = "March"; month[3] = "April"; month[4] = "May"; month[5] = "June"; month[6] = "July"; month[7] = "August"; month[8] = "September"; month[9] = "October"; month[10] = "November"; month[11] = "December"; var n = month[d.getMonth()]; var due_date_day = curr_date + 2; var datenow = curr_date + "-" + n + "-" + curr_year;
+//signInFunction
 $(document).on('click', '#signInButton', function (event) {  event.preventDefault(); var email = $("#signInUsername").val();  var password = $("#signInPassword").val(); if(email != "" && password != ""){ firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error){ Materialize.toast('Oh Bollocks! Invalid Username or Password. Please try again.', 3000); }) } });
+//signOutFunction
 $(".signOut").click(function(){ firebase.auth().signOut().then(function() { $('#createNewPost').addClass('hide'); $('.delete-button').addClass('hide');  $('.signIn').removeClass('hide'); $('.signOut').addClass('hide'); }).catch(function(error) { alert(error.message); }); });
-
-$(document).on('click', '#deletePostBtn', function (event) {
-	event.preventDefault();
-	var post_id = $('#modal_post_id').html();
-	db.collection("posts").doc(post_id).delete().then(function() {
-	}).catch(function(error) {
-		Materialize.toast('Oh Bollocks! An error occured.', 3000);
-	});
-	    $('#modal1').modal('close');
-});
-$(document).on('click', '.modal-trigger', function (event) {
-	var key = $(this).attr("key");
-	$('#modal_post_id').html(key);
-});
-
-$(document).on('click', '#postAnnouncementButton', function (event) {
-	event.preventDefault();
-	var myFile = $('#imgInp').prop('files');
-	var img = '';
-	var imgUrl;
-	var post_type = 'post';
-	if(myFile.length === 0){ }else{ img = myFile[0].name; post_type = 'photo'; }
-	var post = $('#textarea1').val();
-	if(post === ''){ $('#textarea1').focus(); return; };
-
-	if(img !== ''){
-		var storageRef = storage.ref('posts/' + myFile[0].name);
-			var uploadTask = storageRef.put(myFile[0]);
-			uploadTask.on('state_changed', function(snapshot){
-			  var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-			  console.log('Upload is ' + progress + '% done');
-			  switch (snapshot.state) {
-			    case firebase.storage.TaskState.PAUSED: // or 'paused'
-			      console.log('Upload is paused');
-			      break;
-			    case firebase.storage.TaskState.RUNNING: // or 'running'
-			      console.log('Upload is running');
-			      $('#postAnnouncementButton').addClass('hide');
-			      $('.progress').removeClass('hide');
-			      break;
-			  }
-			}, function(error) {
-				console.log(error);
-			}, function() {
-			    var downloadURL = uploadTask.snapshot.downloadURL;
-				db.collection("posts").add({
-				    post : post,
-				    date_posted: datenow,
-				    img: img,
-				    post_type: post_type,
-				    url: downloadURL,
-				})
-				.then(function(docRef) {
-				    var x = db.collection("posts").doc(docRef.id);
-				    var timestamp = firebase.firestore.FieldValue.serverTimestamp();
-				    x.update({ post_id: docRef.id, addedAt: timestamp });
-				    $('#postAnnouncementButton').removeClass('hide');
-			      $('.progress').addClass('hide');
-					Materialize.toast('Brilliant! Your announcement has been posted.', 3000);
-				})
-				.catch(function(error) {
-					Materialize.toast('Oh Bollocks! An error occured.', 3000);
-				});	
-			});
-	}else{
-		db.collection("posts").add({
-		    post : post,
-		    date_posted: datenow,
-		    post_type: post_type,
-		})
-		.then(function(docRef) {
-		    var x = db.collection("posts").doc(docRef.id);
-		    var timestamp = firebase.firestore.FieldValue.serverTimestamp();
-		    x.update({ post_id: docRef.id, addedAt: timestamp });	
-			Materialize.toast('Brilliant! Your announcement has been posted.', 3000);
-		})
-		.catch(function(error) {
-			Materialize.toast('Oh Bollocks! An error occured.', 3000);
-		});
-	}
-
-	$('#newPost')[0].reset();
-	$('.img-wrap').addClass('hide'); $('#imgToUpload').removeAttr('src');
-});
+//deletePostFunction
+$(document).on('click', '#deletePostBtn', function (event) { event.preventDefault(); var post_id = $('#modal_post_id').html(); db.collection("posts").doc(post_id).delete().then(function() { Materialize.toast('Brilliant! Your post has been deleted.', 3000); }).catch(function(error) { Materialize.toast('Oh Bollocks! An error occured.', 3000); }); $('#modal1').modal('close'); });
+//openDeletePostModalFunction
+$(document).on('click', '.modal-trigger', function (event) { var key = $(this).attr("key"); $('#modal_post_id').html(key); });
+//postNewAnnouncementFunction
+$(document).on('click', '#postAnnouncementButton', function (event) { event.preventDefault(); var myFile = $('#imgInp').prop('files'); var img = ''; var imgUrl; var post_type = 'post'; if(myFile.length === 0){ }else{ img = myFile[0].name; post_type = 'photo'; } var post = $('#textarea1').val(); if(post === ''){ $('#textarea1').focus(); return; }; if(img !== ''){
+var storageRef = storage.ref('posts/' + myFile[0].name); var uploadTask = storageRef.put(myFile[0]); uploadTask.on('state_changed', function(snapshot){
+var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100; console.log('Upload is ' + progress + '% done');
+  switch (snapshot.state) {
+    case firebase.storage.TaskState.PAUSED: // or 'paused'
+      console.log('Upload is paused'); break;
+    case firebase.storage.TaskState.RUNNING: // or 'running'
+      console.log('Upload is running'); $('#postAnnouncementButton').addClass('hide'); $('.progress').removeClass('hide'); break;}
+}, function(error) { console.log(error); }, function() { var downloadURL = uploadTask.snapshot.downloadURL; db.collection("posts").add({ post : post, date_posted: datenow, img: img,  post_type: post_type, url: downloadURL, })
+.then(function(docRef) { var x = db.collection("posts").doc(docRef.id); var timestamp = firebase.firestore.FieldValue.serverTimestamp(); x.update({ post_id: docRef.id, addedAt: timestamp }); $('#postAnnouncementButton').removeClass('hide');
+$('.progress').addClass('hide'); Materialize.toast('Brilliant! Your announcement has been posted.', 3000); }) .catch(function(error) { Materialize.toast('Oh Bollocks! An error occured.', 3000); }); }); }else{
+db.collection("posts").add({  post : post, date_posted: datenow, post_type: post_type, }) .then(function(docRef) {
+var x = db.collection("posts").doc(docRef.id); var timestamp = firebase.firestore.FieldValue.serverTimestamp(); x.update({ post_id: docRef.id, addedAt: timestamp });	Materialize.toast('Brilliant! Your announcement has been posted.', 3000); }) .catch(function(error) {Materialize.toast('Oh Bollocks! An error occured.', 3000);});}
+$('#newPost')[0].reset(); $('.img-wrap').addClass('hide'); $('#imgToUpload').removeAttr('src'); });
 
 function getPosts(){
 	db.collection("posts").orderBy("addedAt", "asc")
