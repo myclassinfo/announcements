@@ -1,0 +1,28 @@
+.postButton{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.dropdown-content li>a{
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.dropdown-content li{
+	min-height: 30px;
+}
+li.collection-item .img-wrap {
+    position: relative;
+}
+li.collection-item .img-wrap .close {
+    position: absolute;
+    top: 2px;
+    left: 0px;
+    z-index: 100;
+    cursor: pointer;
+	padding: 0px 5px;
+}
+
+li.collection-item .img-wrap .close:hover{
+	background: #000;
+	color: #fff;
+	border-bottom-right-radius: 2px;
+}
