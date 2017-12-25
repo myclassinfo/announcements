@@ -1,18 +1,4 @@
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      // User is signed in.
-      // window.location.href = 'index.html';
-      // window.location.replace("index.html");
-      $('.delete-button').removeClass('hide');
-      $('.signIn').addClass('hide');
-      $('.signOut').removeClass('hide');
-      $('#signInModal').modal('close');
-       var user = firebase.auth().currentUser;
-       if(user.uid == 'C7WLwOKq9ufefZ8s6Ol0MMmsrV32'){ $('#createNewPost').removeClass('hide'); }
-    } else {
-      
-    }
-});
+firebase.auth().onAuthStateChanged(function(user) { if (user) {  $('.delete-button').removeClass('hide'); $('.signIn').addClass('hide'); $('.signOut').removeClass('hide'); $('#signInModal').modal('close'); var user = firebase.auth().currentUser; if(user.uid == 'C7WLwOKq9ufefZ8s6Ol0MMmsrV32'){ $('#createNewPost').removeClass('hide'); } } else { } });
 
 var db = firebase.firestore();
 var storage = firebase.storage();
