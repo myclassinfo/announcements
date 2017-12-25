@@ -1,54 +1,7 @@
 firebase.auth().onAuthStateChanged(function(user) { if (user) {  $('.delete-button').removeClass('hide'); $('.signIn').addClass('hide'); $('.signOut').removeClass('hide'); $('#signInModal').modal('close'); var user = firebase.auth().currentUser; if(user.uid == 'C7WLwOKq9ufefZ8s6Ol0MMmsrV32'){ $('#createNewPost').removeClass('hide'); } } else { } });
-
-var db = firebase.firestore();
-var storage = firebase.storage();
-
-var d = new Date();
-var curr_date = d.getDate();
-var curr_month = d.getMonth();
-var curr_year = d.getFullYear();
-var month = new Array();
-month[0] = "January";
-month[1] = "February";
-month[2] = "March";
-month[3] = "April";
-month[4] = "May";
-month[5] = "June";
-month[6] = "July";
-month[7] = "August";
-month[8] = "September";
-month[9] = "October";
-month[10] = "November";
-month[11] = "December";
-var n = month[d.getMonth()];
-var due_date_day = curr_date + 2;
-var datenow = curr_date + "-" + n + "-" + curr_year;
-
-$(document).on('click', '#signInButton', function (event) {
-  event.preventDefault();
-
-  var email = $("#signInUsername").val();
-  var password = $("#signInPassword").val();
-
-    if(email != "" && password != ""){
-
-      firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error){
-		Materialize.toast('Oh Bollocks! Invalid Username or Password. Please try again.', 3000);
-      })
-
-    }
-});
-
-$(".signOut").click(function(){
-    firebase.auth().signOut().then(function() {
-      $('#createNewPost').addClass('hide');
-      $('.delete-button').addClass('hide');
-      $('.signIn').removeClass('hide');
-      $('.signOut').addClass('hide');
-    }).catch(function(error) {
-      alert(error.message);
-    });
-});
+var db = firebase.firestore(); var storage = firebase.storage(); var d = new Date(); var curr_date = d.getDate(); var curr_month = d.getMonth(); var curr_year = d.getFullYear(); var month = new Array(); month[0] = "January"; month[1] = "February"; month[2] = "March"; month[3] = "April"; month[4] = "May"; month[5] = "June"; month[6] = "July"; month[7] = "August"; month[8] = "September"; month[9] = "October"; month[10] = "November"; month[11] = "December"; var n = month[d.getMonth()]; var due_date_day = curr_date + 2; var datenow = curr_date + "-" + n + "-" + curr_year;
+$(document).on('click', '#signInButton', function (event) {  event.preventDefault(); var email = $("#signInUsername").val();  var password = $("#signInPassword").val(); if(email != "" && password != ""){ firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error){ Materialize.toast('Oh Bollocks! Invalid Username or Password. Please try again.', 3000); }) } });
+$(".signOut").click(function(){ firebase.auth().signOut().then(function() { $('#createNewPost').addClass('hide'); $('.delete-button').addClass('hide');  $('.signIn').removeClass('hide'); $('.signOut').addClass('hide'); }).catch(function(error) { alert(error.message); }); });
 
 $(document).on('click', '#deletePostBtn', function (event) {
 	event.preventDefault();
